@@ -2,15 +2,16 @@ import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } 
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { OrderService } from '../../services/order.service';
-import { Order, SortColumn, SortDirection } from '../../models/order.interface';
+import { Order } from '../../models/order.interface';
 import { OrderFormDialogComponent } from '../order-form-dialog/order-form-dialog.component';
+import { CustomDateFormatPipe } from '../../pipes/date-format.pipe';
 
-type SortType = 'newest' | 'oldest' | 'status' | 'customer';
+type SortType = 'newest' | 'id' | 'status' | 'customer';
 
 @Component({
   selector: 'app-order-table',
   standalone: true,
-  imports: [CommonModule, MatDialogModule],
+  imports: [CommonModule, MatDialogModule, CustomDateFormatPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './order-table.component.html',
   styleUrls: ['./order-table.component.scss']
@@ -21,26 +22,65 @@ export class OrderTableComponent implements OnInit {
   
   private ordersSignal = signal<Order[]>([]);
   isLoading = signal<boolean>(true);
-  currentSort = signal<SortType>('newest'); // Текущий тип сортировки
-  
-  displayedColumns: string[] = ['id', 'customer', 'date', 'status', 'actions'];
+  currentSort = signal<SortType>('newest');
   
   orders = this.ordersSignal.asReadonly();
   totalOrders = computed(() => this.ordersSignal().length);
   
-  // Сортировка в зависимости от выбранного типа
+  private statusOrder: Record<string, number> = {
+    'Active': 1,
+    'Inactive': 2,
+    'Pending': 3,
+    'Archive': 4
+  };
+  
+  private parseDate(dateStr: string): number {
+    if (!dateStr) return 0;
+    if (dateStr === 'Invalid Date') return 0;
+    
+    if (dateStr.includes('.')) {
+      const parts = dateStr.split('.');
+      if (parts.length === 3) {
+        const [day, month, year] = parts;
+        const date = new Date(`${year}-${month}-${day}`);
+        return isNaN(date.getTime()) ? 0 : date.getTime();
+      }
+    }
+    
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? 0 : date.getTime();
+  }
+  
   sortedOrders = computed(() => {
     const orders = [...this.ordersSignal()];
     const sortType = this.currentSort();
     
     switch(sortType) {
       case 'newest':
-        return orders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      case 'oldest':
-        return orders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        return orders.sort((a, b) => {
+          const timeA = this.parseDate(a.date);
+          const timeB = this.parseDate(b.date);
+          if (timeA === 0 && timeB === 0) return 0;
+          if (timeA === 0) return 1;
+          if (timeB === 0) return -1;
+          return timeB - timeA;
+        });
+        
+      case 'id':
+        return orders.sort((a, b) => a.id - b.id);
+        
       case 'status':
-        const statusOrder = { 'Active': 1, 'Inactive': 2, 'Pending': 3, 'Archive': 4 };
-        return orders.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+        return orders.sort((a, b) => 
+          this.statusOrder[a.status] - this.statusOrder[b.status]
+        );
+        
+      case 'customer':
+        return orders.sort((a, b) => {
+          const fullNameA = `${a.last_name} ${a.first_name}`.toLowerCase();
+          const fullNameB = `${b.last_name} ${b.first_name}`.toLowerCase();
+          return fullNameA.localeCompare(fullNameB);
+        });
+        
       default:
         return orders;
     }
@@ -64,7 +104,6 @@ export class OrderTableComponent implements OnInit {
     });
   }
   
-  // Обработчик изменения сортировки
   onSortChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.currentSort.set(select.value as SortType);

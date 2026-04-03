@@ -5,7 +5,7 @@
     <div class="header-actions">
       <select class="sort-select" (change)="onSortChange($event)">
         <option value="newest">Sort by: Newest</option>
-        <option value="oldest">Sort by: Oldest</option>
+        <option value="id">Sort by: Order ID</option>
         <option value="status">Sort by: Status</option>
         <option value="customer">Sort by: Customer</option>
       </select>
@@ -43,7 +43,7 @@
             >
               <td>{{ order.id }}</td>
               <td>{{ order.first_name }} {{ order.last_name }}</td>
-              <td>{{ order.date | date:'dd.MM.yyyy' }}</td>
+              <td>{{ order.date | customDate }}</td>
               <td>
                 <span class="status-cell">
                   <span class="status-dot" [class]="'dot-' + order.status.toLowerCase()"></span>
