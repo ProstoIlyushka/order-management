@@ -47,10 +47,9 @@
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Date</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         @if (orderForm.get('date')?.invalid && orderForm.get('date')?.touched) {
-          <mat-error class="error-message">Required</mat-error>
+          <mat-error class="error-message">Valid date required</mat-error>
         }
       </mat-form-field>
       
