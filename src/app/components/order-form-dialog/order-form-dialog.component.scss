@@ -1,5 +1,122 @@
-input {
-  display: block;
-  margin: 10px 0;
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 8px 0 0 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  
+  .form-field {
+    flex: 1;
+  }
+}
+
+// Уменьшаем размер полей в 1.5 раза
+::ng-deep .mat-mdc-form-field {
   width: 100%;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  height: 40px !important;  // было 56px, стало 40px (уменьшено в 1.4 раза)
+  min-height: 40px !important;
+}
+
+::ng-deep .mat-mdc-form-field-flex {
+  height: 40px !important;
+  align-items: center;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  min-height: 40px !important;
+}
+
+// Уменьшаем шрифты
+::ng-deep .mat-mdc-form-field .mat-mdc-floating-label {
+  font-size: 13px !important;
+}
+
+::ng-deep .mat-mdc-input-element {
+  font-size: 14px !important;
+}
+
+::ng-deep .mat-mdc-select-value-text {
+  font-size: 14px !important;
+}
+
+::ng-deep .mat-mdc-select-arrow {
+  transform: scale(0.9);
+}
+
+// Уменьшаем отступы для subscript (область ошибок)
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  height: 18px;
+  font-size: 11px;
+}
+
+// Красные сообщения об ошибках
+.error-message {
+  color: #f44336 !important;
+  font-size: 11px !important;
+}
+
+// Уменьшаем кнопки
+::ng-deep .mat-mdc-button {
+  font-size: 13px !important;
+  height: 32px !important;
+}
+
+::ng-deep .mat-mdc-raised-button {
+  font-size: 13px !important;
+  height: 32px !important;
+  padding: 0 16px !important;
+}
+
+// Уменьшаем заголовок
+mat-dialog-title {
+  margin: 0 0 20px 0;
+  padding: 12px 24px 0 24px;
+  font-size: 18px !important;
+  font-weight: 500;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+// Контент диалога
+mat-dialog-content {
+  min-width: 480px;
+  max-height: none;
+  overflow-y: visible;
+  padding: 8px 24px 16px 24px;
+  margin: -8px -4px 16px -4px;
+}
+
+// Действия внизу
+mat-dialog-actions {
+  padding: 12px 0 8px 0;
+  margin-top: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+// Убираем скролл у всего диалога
+::ng-deep .mat-mdc-dialog-container {
+  overflow: visible !important;
+}
+
+::ng-deep .mat-mdc-dialog-surface {
+  overflow: visible !important;
+  border-radius: 12px;
+}
+
+// Стили для датапикера
+::ng-deep .mat-datepicker-toggle {
+  transform: scale(0.85);
+}
+
+// Уменьшаем отступы внутри select
+::ng-deep .mat-mdc-select-trigger {
+  height: 40px !important;
 }

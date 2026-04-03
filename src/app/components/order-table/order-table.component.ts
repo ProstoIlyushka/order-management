@@ -30,21 +30,39 @@ export class OrderTableComponent implements OnInit {
   
   orders = this.ordersSignal.asReadonly();
   totalOrders = computed(() => this.ordersSignal().length);
-  
-  // Общее количество страниц
   totalPages = computed(() => Math.ceil(this.totalOrders() / this.pageSize()));
   
-  // Текущие записи на странице
   paginatedOrders = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize();
     const end = start + this.pageSize();
     return this.sortedOrders().slice(start, end);
   });
   
-  // Массив для отображения номеров страниц
-  pageNumbers = computed(() => {
+  // Умная пагинация: первая, последняя, текущая + 2 соседние
+  visiblePages = computed<(number | string)[]>(() => {
+    const current = this.currentPage();
     const total = this.totalPages();
-    return Array.from({ length: total }, (_, i) => i + 1);
+    const delta = 2;
+    
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    
+    const range: (number | string)[] = [];
+    
+    for (let i = 1; i <= total; i++) {
+      if (
+        i === 1 ||
+        i === total ||
+        (i >= current - delta && i <= current + delta)
+      ) {
+        range.push(i);
+      } else if (range[range.length - 1] !== '...') {
+        range.push('...');
+      }
+    }
+    
+    return range;
   });
   
   private statusOrder: Record<string, number> = {
@@ -127,13 +145,13 @@ export class OrderTableComponent implements OnInit {
   onSortChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.currentSort.set(select.value as SortType);
-    this.currentPage.set(1); // Сбрасываем на первую страницу при смене сортировки
+    this.currentPage.set(1);
   }
   
   onPageSizeChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.pageSize.set(parseInt(select.value, 10));
-    this.currentPage.set(1); // Сбрасываем на первую страницу
+    this.currentPage.set(1);
   }
   
   goToPage(page: number): void {
@@ -156,7 +174,7 @@ export class OrderTableComponent implements OnInit {
   
   openEditDialog(order: Order): void {
     const dialogRef = this.dialog.open(OrderFormDialogComponent, {
-      width: '600px',
+      width: '720px',
       data: { order, isEditMode: true }
     });
     
@@ -175,7 +193,7 @@ export class OrderTableComponent implements OnInit {
   
   openNewOrderDialog(): void {
     const dialogRef = this.dialog.open(OrderFormDialogComponent, {
-      width: '600px',
+      width: '720px',
       data: { order: null, isEditMode: false }
     });
     

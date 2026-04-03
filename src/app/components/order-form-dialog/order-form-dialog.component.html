@@ -4,40 +4,45 @@
 
 <mat-dialog-content>
   <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="order-form">
+    <!-- Первая строка: First Name | Last Name -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>First Name</mat-label>
-        <input matInput formControlName="first_name" placeholder="Enter first name">
+        <input matInput formControlName="first_name" placeholder="First name">
         @if (orderForm.get('first_name')?.invalid && orderForm.get('first_name')?.touched) {
-          <mat-error>{{ getErrorMessage('first_name') }}</mat-error>
+          <mat-error class="error-message">Required</mat-error>
         }
       </mat-form-field>
       
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Last Name</mat-label>
-        <input matInput formControlName="last_name" placeholder="Enter last name">
+        <input matInput formControlName="last_name" placeholder="Last name">
         @if (orderForm.get('last_name')?.invalid && orderForm.get('last_name')?.touched) {
-          <mat-error>{{ getErrorMessage('last_name') }}</mat-error>
+          <mat-error class="error-message">Required</mat-error>
         }
       </mat-form-field>
     </div>
     
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" placeholder="example@email.com" type="email">
-      @if (orderForm.get('email')?.invalid && orderForm.get('email')?.touched) {
-        <mat-error>{{ getErrorMessage('email') }}</mat-error>
-      }
-    </mat-form-field>
+    <!-- Вторая строка: Email | Address -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Email" type="email">
+        @if (orderForm.get('email')?.invalid && orderForm.get('email')?.touched) {
+          <mat-error class="error-message">Valid email required</mat-error>
+        }
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="address" placeholder="Address">
+        @if (orderForm.get('address')?.invalid && orderForm.get('address')?.touched) {
+          <mat-error class="error-message">Required</mat-error>
+        }
+      </mat-form-field>
+    </div>
     
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Address</mat-label>
-      <textarea matInput formControlName="address" rows="3" placeholder="Enter address"></textarea>
-      @if (orderForm.get('address')?.invalid && orderForm.get('address')?.touched) {
-        <mat-error>{{ getErrorMessage('address') }}</mat-error>
-      }
-    </mat-form-field>
-    
+    <!-- Третья строка: Date | Status -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Date</mat-label>
@@ -45,7 +50,7 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         @if (orderForm.get('date')?.invalid && orderForm.get('date')?.touched) {
-          <mat-error>{{ getErrorMessage('date') }}</mat-error>
+          <mat-error class="error-message">Required</mat-error>
         }
       </mat-form-field>
       
@@ -53,11 +58,12 @@
         <mat-label>Status</mat-label>
         <mat-select formControlName="status">
           <mat-option value="Active">Active</mat-option>
+          <mat-option value="Inactive">Inactive</mat-option>
           <mat-option value="Pending">Pending</mat-option>
           <mat-option value="Archive">Archive</mat-option>
         </mat-select>
         @if (orderForm.get('status')?.invalid && orderForm.get('status')?.touched) {
-          <mat-error>{{ getErrorMessage('status') }}</mat-error>
+          <mat-error class="error-message">Required</mat-error>
         }
       </mat-form-field>
     </div>

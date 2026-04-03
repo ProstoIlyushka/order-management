@@ -18,7 +18,8 @@
   
   .header-actions {
     display: flex;
-    gap: 12px;
+    gap: 15px;
+    align-items: center;
   }
 }
 
@@ -28,6 +29,10 @@
   border-radius: 4px;
   background: white;
   cursor: pointer;
+  
+  &:hover {
+    border-color: #1976d2;
+  }
 }
 
 .btn-new {
@@ -83,7 +88,6 @@
   }
 }
 
-// Стили для статуса: точка + текст
 .status-cell {
   display: inline-flex;
   align-items: center;
@@ -97,19 +101,19 @@
   display: inline-block;
   
   &.dot-active {
-    background-color: #31c500;   // зеленый
+    background-color: #4caf50;
   }
   
   &.dot-inactive {
-    background-color: #d70000;   // оранжевый
+    background-color: #ff9800;
   }
   
   &.dot-pending {
-    background-color: #e8f000;   // желтый
+    background-color: #ffc107;
   }
   
   &.dot-archive {
-    background-color: #9e9e9e;   // серый
+    background-color: #9e9e9e;
   }
 }
 
@@ -141,6 +145,82 @@
     opacity: 0.3;
     cursor: not-allowed;
   }
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+.page-size-select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  
+  &:hover {
+    border-color: #1976d2;
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 6px;
+  color: #333;
+  transition: all 0.2s;
+  
+  &:hover:not(:disabled) {
+    background-color: #f0f0f0;
+  }
+  
+  &.active {
+    background-color: #1976d2;
+    color: white;
+  }
+  
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.nav-btn {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.page-dots {
+  padding: 0 4px;
+  color: #999;
+  font-size: 14px;
 }
 
 .no-data {
