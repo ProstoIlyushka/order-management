@@ -7,3 +7,11 @@ export interface Order {
   date: string;
   status: 'Active' | 'Pending' | 'Archive';
 }
+
+export type SortColumn = keyof Order; // Теперь экспортируется
+export type SortDirection = 'asc' | 'desc'; // Теперь экспортируется
+
+export interface SortEvent {
+  column: SortColumn;
+  direction: SortDirection;
+}

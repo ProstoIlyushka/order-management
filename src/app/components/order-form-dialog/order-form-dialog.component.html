@@ -1,11 +1,72 @@
-<h2>Order</h2>
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Edit Order' : 'Create New Order' }}
+</h2>
 
-<form [formGroup]="form">
-  <input formControlName="first_name" placeholder="First Name">
-  <input formControlName="last_name" placeholder="Last Name">
-  <input formControlName="email" placeholder="Email">
-  <input formControlName="address" placeholder="Address">
-  <input formControlName="date" type="date">
-</form>
-
-<button (click)="save()">Save</button>
+<mat-dialog-content>
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="order-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="first_name" placeholder="Enter first name">
+        @if (orderForm.get('first_name')?.invalid && orderForm.get('first_name')?.touched) {
+          <mat-error>{{ getErrorMessage('first_name') }}</mat-error>
+        }
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="last_name" placeholder="Enter last name">
+        @if (orderForm.get('last_name')?.invalid && orderForm.get('last_name')?.touched) {
+          <mat-error>{{ getErrorMessage('last_name') }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="example@email.com" type="email">
+      @if (orderForm.get('email')?.invalid && orderForm.get('email')?.touched) {
+        <mat-error>{{ getErrorMessage('email') }}</mat-error>
+      }
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Address</mat-label>
+      <textarea matInput formControlName="address" rows="3" placeholder="Enter address"></textarea>
+      @if (orderForm.get('address')?.invalid && orderForm.get('address')?.touched) {
+        <mat-error>{{ getErrorMessage('address') }}</mat-error>
+      }
+    </mat-form-field>
+    
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (orderForm.get('date')?.invalid && orderForm.get('date')?.touched) {
+          <mat-error>{{ getErrorMessage('date') }}</mat-error>
+        }
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="Active">Active</mat-option>
+          <mat-option value="Pending">Pending</mat-option>
+          <mat-option value="Archive">Archive</mat-option>
+        </mat-select>
+        @if (orderForm.get('status')?.invalid && orderForm.get('status')?.touched) {
+          <mat-error>{{ getErrorMessage('status') }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="orderForm.invalid">
+        {{ isEditMode ? 'Save' : 'Create' }}
+      </button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>
