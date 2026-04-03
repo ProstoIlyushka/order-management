@@ -24,8 +24,28 @@ export class OrderTableComponent implements OnInit {
   isLoading = signal<boolean>(true);
   currentSort = signal<SortType>('newest');
   
+  // Пагинация
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(10);
+  
   orders = this.ordersSignal.asReadonly();
   totalOrders = computed(() => this.ordersSignal().length);
+  
+  // Общее количество страниц
+  totalPages = computed(() => Math.ceil(this.totalOrders() / this.pageSize()));
+  
+  // Текущие записи на странице
+  paginatedOrders = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const end = start + this.pageSize();
+    return this.sortedOrders().slice(start, end);
+  });
+  
+  // Массив для отображения номеров страниц
+  pageNumbers = computed(() => {
+    const total = this.totalPages();
+    return Array.from({ length: total }, (_, i) => i + 1);
+  });
   
   private statusOrder: Record<string, number> = {
     'Active': 1,
@@ -107,6 +127,31 @@ export class OrderTableComponent implements OnInit {
   onSortChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.currentSort.set(select.value as SortType);
+    this.currentPage.set(1); // Сбрасываем на первую страницу при смене сортировки
+  }
+  
+  onPageSizeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.pageSize.set(parseInt(select.value, 10));
+    this.currentPage.set(1); // Сбрасываем на первую страницу
+  }
+  
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
+  }
+  
+  previousPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+    }
+  }
+  
+  nextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+    }
   }
   
   openEditDialog(order: Order): void {
@@ -147,5 +192,14 @@ export class OrderTableComponent implements OnInit {
   
   isRowClickable(order: Order): boolean {
     return order.status !== 'Archive';
+  }
+  
+  getStartIndex(): number {
+    return (this.currentPage() - 1) * this.pageSize() + 1;
+  }
+  
+  getEndIndex(): number {
+    const end = this.currentPage() * this.pageSize();
+    return Math.min(end, this.totalOrders());
   }
 }

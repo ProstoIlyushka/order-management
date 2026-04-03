@@ -1,5 +1,4 @@
 <div class="order-table-container">
-  <!-- Верхний блок -->
   <div class="table-header">
     <h2>Latest Orders</h2>
     <div class="header-actions">
@@ -13,7 +12,6 @@
     </div>
   </div>
   
-  <!-- Индикатор загрузки -->
   @if (isLoading()) {
     <div class="loading-container">
       <div class="spinner"></div>
@@ -21,7 +19,6 @@
     </div>
   }
   
-  <!-- Таблица -->
   @if (!isLoading() && orders().length > 0) {
     <div class="table-responsive">
       <table class="order-table">
@@ -35,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (order of sortedOrders(); track order.id) {
+          @for (order of paginatedOrders(); track order.id) {
             <tr 
               [class.clickable-row]="isRowClickable(order)"
               [class.archived-row]="!isRowClickable(order)"
@@ -66,6 +63,42 @@
           }
         </tbody>
       </table>
+    </div>
+    
+    <!-- Пагинация -->
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Rows per page:
+        <select class="page-size-select" (change)="onPageSizeChange($event)">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+        <span>{{ getStartIndex() }}-{{ getEndIndex() }} of {{ totalOrders() }}</span>
+      </div>
+      
+      <div class="pagination-controls">
+        <button 
+          class="page-btn" 
+          (click)="previousPage()" 
+          [disabled]="currentPage() === 1"
+        >‹</button>
+        
+        @for (page of pageNumbers(); track page) {
+          <button 
+            class="page-btn" 
+            [class.active]="currentPage() === page"
+            (click)="goToPage(page)"
+          >{{ page }}</button>
+        }
+        
+        <button 
+          class="page-btn" 
+          (click)="nextPage()" 
+          [disabled]="currentPage() === totalPages()"
+        >›</button>
+      </div>
     </div>
   }
   
