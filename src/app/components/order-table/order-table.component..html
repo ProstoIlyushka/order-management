@@ -1,0 +1,36 @@
+<h2>Latest Orders ({{ orders.length }})</h2>
+
+<button (click)="openDialog()">New Entry</button>
+<button (click)="toggle('email')">Toggle Email</button>
+<button (click)="toggle('address')">Toggle Address</button>
+
+<div *ngIf="loading">Loading...</div>
+
+<table *ngIf="!loading">
+  <tr>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th *ngIf="showEmail">Email</th>
+    <th *ngIf="showAddress">Address</th>
+    <th>Actions</th>
+  </tr>
+
+  <tr *ngFor="let o of orders"
+      [class.archive]="o.status === 'Archive'"
+      (click)="openDialog(o)">
+
+    <td>{{ o.id }}</td>
+    <td>{{ o.first_name }} {{ o.last_name }}</td>
+    <td>{{ o.date }}</td>
+    <td>{{ o.status }}</td>
+
+    <td *ngIf="showEmail">{{ o.email }}</td>
+    <td *ngIf="showAddress">{{ o.address }}</td>
+
+    <td>
+      <button (click)="openDialog(o); $event.stopPropagation()">✏️</button>
+    </td>
+  </tr>
+</table>

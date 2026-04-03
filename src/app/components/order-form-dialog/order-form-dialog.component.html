@@ -1,0 +1,11 @@
+<h2>Order</h2>
+
+<form [formGroup]="form">
+  <input formControlName="first_name" placeholder="First Name">
+  <input formControlName="last_name" placeholder="Last Name">
+  <input formControlName="email" placeholder="Email">
+  <input formControlName="address" placeholder="Address">
+  <input formControlName="date" type="date">
+</form>
+
+<button (click)="save()">Save</button>
