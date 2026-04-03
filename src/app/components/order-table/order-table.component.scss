@@ -1,19 +1,150 @@
-table {
-  width: 100%;
-  border-collapse: collapse;
+.order-table-container {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
 }
 
-td, th {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 12px;
+  }
 }
 
-tr:hover {
-  background: #f5f5f5;
+.sort-select {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
   cursor: pointer;
 }
 
-.archive {
-  opacity: 0.5;
-  pointer-events: none;
+.btn-new {
+  padding: 6px 16px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  
+  &:hover {
+    background: #1565c0;
+  }
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+  
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #1976d2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+}
+
+// Стили для статуса: точка + текст
+.status-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  
+  &.dot-active {
+    background-color: #31c500;   // зеленый
+  }
+  
+  &.dot-inactive {
+    background-color: #d70000;   // оранжевый
+  }
+  
+  &.dot-pending {
+    background-color: #e8f000;   // желтый
+  }
+  
+  &.dot-archive {
+    background-color: #9e9e9e;   // серый
+  }
+}
+
+.clickable-row {
+  cursor: pointer;
+  
+  &:hover {
+    background: #f9f9f9;
+  }
+}
+
+.archived-row {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 4px;
+  
+  &:hover:not(:disabled) {
+    opacity: 0.7;
+  }
+  
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #999;
 }

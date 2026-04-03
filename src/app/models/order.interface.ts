@@ -5,11 +5,11 @@ export interface Order {
   email: string;
   address: string;
   date: string;
-  status: 'Active' | 'Pending' | 'Archive';
+  status: 'Active' | 'Inactive' | 'Pending' | 'Archive';
 }
 
-export type SortColumn = keyof Order; // Теперь экспортируется
-export type SortDirection = 'asc' | 'desc'; // Теперь экспортируется
+export type SortColumn = keyof Order;
+export type SortDirection = 'asc' | 'desc';
 
 export interface SortEvent {
   column: SortColumn;

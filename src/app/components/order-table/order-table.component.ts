@@ -1,30 +1,16 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { OrderService } from '../../services/order.service';
 import { Order, SortColumn, SortDirection } from '../../models/order.interface';
 import { OrderFormDialogComponent } from '../order-form-dialog/order-form-dialog.component';
 
+type SortType = 'newest' | 'oldest' | 'status' | 'customer';
+
 @Component({
   selector: 'app-order-table',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatSortModule,
-    MatProgressSpinnerModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatTooltipModule,
-    OrderFormDialogComponent
-  ],
+  imports: [CommonModule, MatDialogModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './order-table.component.html',
   styleUrls: ['./order-table.component.scss']
@@ -35,38 +21,29 @@ export class OrderTableComponent implements OnInit {
   
   private ordersSignal = signal<Order[]>([]);
   isLoading = signal<boolean>(true);
-  sortColumn = signal<SortColumn>('id');
-  sortDirection = signal<SortDirection>('asc');
+  currentSort = signal<SortType>('newest'); // Текущий тип сортировки
   
   displayedColumns: string[] = ['id', 'customer', 'date', 'status', 'actions'];
   
   orders = this.ordersSignal.asReadonly();
   totalOrders = computed(() => this.ordersSignal().length);
   
+  // Сортировка в зависимости от выбранного типа
   sortedOrders = computed(() => {
     const orders = [...this.ordersSignal()];
-    const column = this.sortColumn();
-    const direction = this.sortDirection();
+    const sortType = this.currentSort();
     
-    orders.sort((a, b) => {
-      let aValue: any = a[column as keyof Order];
-      let bValue: any = b[column as keyof Order];
-      
-      if (typeof aValue === 'string') {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
-      }
-      
-      if (column === 'date') {
-        aValue = new Date(aValue).getTime();
-        bValue = new Date(bValue).getTime();
-      }
-      
-      if (aValue < bValue) return direction === 'asc' ? -1 : 1;
-      if (aValue > bValue) return direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-    return orders;
+    switch(sortType) {
+      case 'newest':
+        return orders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      case 'oldest':
+        return orders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      case 'status':
+        const statusOrder = { 'Active': 1, 'Inactive': 2, 'Pending': 3, 'Archive': 4 };
+        return orders.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+      default:
+        return orders;
+    }
   });
   
   ngOnInit(): void {
@@ -87,13 +64,10 @@ export class OrderTableComponent implements OnInit {
     });
   }
   
-  sort(column: SortColumn): void {
-    if (this.sortColumn() === column) {
-      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
-    } else {
-      this.sortColumn.set(column);
-      this.sortDirection.set('asc');
-    }
+  // Обработчик изменения сортировки
+  onSortChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.currentSort.set(select.value as SortType);
   }
   
   openEditDialog(order: Order): void {
